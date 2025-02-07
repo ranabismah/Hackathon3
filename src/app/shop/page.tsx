@@ -6,34 +6,62 @@ import CustomerCare from "@/components/CustomerCare";
 import Image from "next/image";
 import { client } from "@/sanity/lib/client";
 
+// Define Product Interface
+interface Product {
+  _id: string;
+  title: string;
+  description: string;
+  productImage?: { asset?: { _ref?: string } };
+  price: number;
+  discountPercentage?: number;
+  tags?: string[];
+  isNew?: boolean;
+}
+
+// Fetch Products from Sanity
+const fetchProducts = async (sort: string, page: number, limit: number): Promise<Product[]> => {
+  try {
+    let orderQuery = "_createdAt desc"; // Default sorting
+    if (sort === "priceLowToHigh") orderQuery = "price asc";
+    if (sort === "priceHighToLow") orderQuery = "price desc";
+    if (sort === "newest") orderQuery = "_createdAt desc";
+
+    const query = `*[_type == "product"] | order(${orderQuery}) [${(page - 1) * limit}...${page * limit}] {
+      _id, title, description, productImage, price, discountPercentage, tags, isNew
+    }`;
+
+    return await client.fetch(query);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+};
+
 const Shop: React.FC = () => {
   const [page, setPage] = useState<number>(1);
-  const [showCount, setShowCount] = useState<number>(16); // Products per page
   const [sort, setSort] = useState<string>("default");
-  const [products, setProducts] = useState<any[]>([]);
-  const [totalProducts, setTotalProducts] = useState<number>(0);
+  const [products, setProducts] = useState<Product[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      let orderQuery = "_createdAt desc"; // Default sorting
-      if (sort === "priceLowToHigh") orderQuery = "price asc";
-      if (sort === "priceHighToLow") orderQuery = "price desc";
-      if (sort === "newest") orderQuery = "_createdAt desc";
+    fetchProducts(sort, page, 16).then(setProducts);
+  }, [page, sort]);
 
-      const query = `*[_type == "product"] | order(${orderQuery}) [${(page - 1) * showCount}...${page * showCount}] {
-        _id, title, description, productImage, price, discountPercentage, tags, isNew
-      }`;
-      const fetchedProducts = await client.fetch(query);
-      setProducts(fetchedProducts);
+  const handleAddToCart = (product: Product) => {
+    if (typeof window !== "undefined") {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const existingItem = cart.find((item: Product) => item._id === product._id);
 
-      const totalQuery = `count(*[_type == "product"])`;
-      const totalCount = await client.fetch(totalQuery);
-      setTotalProducts(totalCount);
-    };
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
 
-    fetchProducts();
-  }, [page, showCount, sort]);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      router.push("/cart");
+    }
+  };
 
   return (
     <div>
@@ -81,18 +109,17 @@ const Shop: React.FC = () => {
               Prev
             </button>
             <button
-              className={`px-4 py-2 rounded ${
-                products.length < showCount ? "bg-gray-400 cursor-not-allowed" : "bg-golden"
-              }`}
+              className={`px-4 py-2 rounded ${products.length < 16 ? "bg-gray-400 cursor-not-allowed" : "bg-golden"}`}
               onClick={() => setPage((prev) => prev + 1)}
-              disabled={products.length < showCount}
+              disabled={products.length < 16}
             >
               Next
             </button>
           </div>
         </div>
 
-        <ShopProductList products={products} onAddToCart={() => {}} />
+        {/* Product List */}
+        <ShopProductList products={products} onAddToCart={handleAddToCart} />
       </section>
 
       {/* Customer Care Section */}
@@ -102,3 +129,4 @@ const Shop: React.FC = () => {
 };
 
 export default Shop;
+

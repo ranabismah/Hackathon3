@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 import { BiUser } from "react-icons/bi";
-import { BsSearch, BsHouseDoor, BsShop, BsPencilSquare } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 import { PiTrolleyFill } from "react-icons/pi";
 import { HiMenu, HiX } from "react-icons/hi";
-import { MdContactMail } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
 const Navbar: React.FC = () => {
@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
         {/* Logo */}
         <div className="text-2xl font-bold text-gray-800">
-          <a href="/">Furniture</a>
+          <Link href="/">Furniture</Link>
         </div>
 
         {/* Search Bar */}
@@ -47,20 +47,20 @@ const Navbar: React.FC = () => {
 
         {/* Navigation Links */}
         <ul className="hidden md:flex md:space-x-8 text-gray-600 font-medium">
-          <li><a href="/" className="hover:text-gray-800">Home</a></li>
-          <li><a href="/shop" className="hover:text-gray-800">Shop</a></li>
-          <li><a href="/blog" className="hover:text-gray-800">Blog</a></li>
-          <li><a href="/contact" className="hover:text-gray-800">Contact</a></li>
+          <li><Link href="/" className="hover:text-gray-800">Home</Link></li>
+          <li><Link href="/shop" className="hover:text-gray-800">Shop</Link></li>
+          <li><Link href="/blog" className="hover:text-gray-800">Blog</Link></li>
+          <li><Link href="/contact" className="hover:text-gray-800">Contact</Link></li>
         </ul>
 
         {/* Icons */}
         <div className="hidden md:flex items-center space-x-6">
           <BiUser className="w-5 h-5 cursor-pointer text-gray-600" />
-          <a href="/cart" className="relative">
+          <Link href="/cart" className="relative">
             <PiTrolleyFill className="w-6 h-6 cursor-pointer text-gray-600" />
             {/* Add a cart count badge if needed */}
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -72,10 +72,10 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {isMenuOpen && (
         <ul className="md:hidden bg-white shadow-md text-gray-600 font-medium py-2">
-          <li><a href="/" className="block py-4 px-6 hover:text-gray-800">Home</a></li>
-          <li><a href="/shop" className="block py-4 px-6 hover:text-gray-800">Shop</a></li>
-          <li><a href="/blog" className="block py-4 px-6 hover:text-gray-800">Blog</a></li>
-          <li><a href="/contact" className="block py-4 px-6 hover:text-gray-800">Contact</a></li>
+          <li><Link href="/" className="block py-4 px-6 hover:text-gray-800">Home</Link></li>
+          <li><Link href="/shop" className="block py-4 px-6 hover:text-gray-800">Shop</Link></li>
+          <li><Link href="/blog" className="block py-4 px-6 hover:text-gray-800">Blog</Link></li>
+          <li><Link href="/contact" className="block py-4 px-6 hover:text-gray-800">Contact</Link></li>
           {/* Search Bar for Mobile */}
           <li className="px-6">
             <form onSubmit={handleSearch} className="flex border border-gray-300 rounded-lg overflow-hidden">

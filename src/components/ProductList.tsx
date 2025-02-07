@@ -19,6 +19,12 @@ interface Product {
   isNew?: boolean;
 }
 
+// Extend Product to include quantity & image for the cart
+interface CartProduct extends Product {
+  quantity: number;
+  image: string;
+}
+
 // Sanity Image URL Builder
 const builder = imageUrlBuilder(client);
 const urlFor = (source: any) => builder.image(source).url();
@@ -52,8 +58,8 @@ const ProductList: React.FC = () => {
   }, []);
 
   const handleAddToCart = (product: Product) => {
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const existingItem = cart.find((item: Product) => item._id === product._id);
+    const cart: CartProduct[] = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingItem = cart.find((item) => item._id === product._id);
 
     if (existingItem) {
       existingItem.quantity += 1;

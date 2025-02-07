@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/Button'
-import Image from 'next/image'
 import React from 'react'
 
 const Hero = () => {
@@ -29,6 +28,7 @@ const Hero = () => {
 }
 
 export default Hero
+
 
 
 

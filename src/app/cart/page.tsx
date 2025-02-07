@@ -4,23 +4,33 @@ import Link from 'next/link';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
 import { FiTrash2 } from 'react-icons/fi';
 import Image from 'next/image';
+
+// ✅ Define the CartItem type
+type CartItem = {
+  _id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image?: string;
+};
+
 const Cart: React.FC = () => {
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const storedCart: CartItem[] = JSON.parse(localStorage.getItem('cart') || '[]');
     setCart(storedCart);
     calculateTotal(storedCart);
   }, []);
 
-  const updateCart = (newCart: any[]) => {
+  const updateCart = (newCart: CartItem[]) => {
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
     calculateTotal(newCart);
   };
 
-  const calculateTotal = (cartItems: any[]) => {
+  const calculateTotal = (cartItems: CartItem[]) => {
     const newTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     setTotal(newTotal);
   };
@@ -48,14 +58,15 @@ const Cart: React.FC = () => {
 
   return (
     <section className="py-10 px-4 flex flex-col items-center justify-center w-full bg-[#FFF3E3]">
-          {/* Banner Section */}
-                  <div className="md:h-[316px] relative w-full">
-                    <Image src="/shop/shop-hero.png" alt="hero" width={1440} height={316} />
-                    <div className="w-[150px] md:w-[124px] absolute translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] h-[90%] flex flex-col justify-center items-center md:h-[84px]">
-                      <h1 className="font-medium text-4xl text-black">Cart</h1>
-                      <p className="font-normal text-[16px] text-mygray">home &gt; Cart</p>
-                    </div>
-                  </div>
+      {/* Banner Section */}
+      <div className="md:h-[316px] relative w-full">
+        <Image src="/shop/shop-hero.png" alt="hero" width={1440} height={316} priority />
+        <div className="w-[150px] md:w-[124px] absolute translate-x-[-50%] translate-y-[-50%] top-[50%] left-[50%] h-[90%] flex flex-col justify-center items-center md:h-[84px]">
+          <h1 className="font-medium text-4xl text-black">Cart</h1>
+          <p className="font-normal text-[16px] text-mygray">home &gt; Cart</p>
+        </div>
+      </div>
+
       <div className="w-full max-w-screen-lg bg-white rounded-lg shadow-lg p-6">
         <h1 className="text-3xl font-bold text-center text-[#333333] mb-8 flex items-center justify-center">
           <AiOutlineShoppingCart className="mr-2 text-[#B88E2F]" /> Your Cart
@@ -76,15 +87,16 @@ const Cart: React.FC = () => {
             <div className="space-y-6">
               {cart.map((item, index) => (
                 <div key={item._id + '-' + index} className="flex justify-between items-center p-4 bg-[#F9F1E7] rounded-lg shadow-md">
-                  
-                  {/* ✅ Show placeholder if image is missing */}
-                  {item.image ? (
-                    <img src={item.image} alt={item.title} className="w-20 h-20 object-cover rounded-lg" />
-                  ) : (
-                    <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-lg">
-                      <span className="text-gray-500 text-sm">No Image</span>
-                    </div>
-                  )}
+                  {/* ✅ Use next/image for optimization */}
+                  <div className="w-20 h-20 relative">
+                    {item.image ? (
+                      <Image src={item.image} alt={item.title} layout="fill" objectFit="cover" className="rounded-lg" />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                        <span className="text-gray-500 text-sm">No Image</span>
+                      </div>
+                    )}
+                  </div>
 
                   {/* ✅ Product Info */}
                   <div className="flex-1 ml-4">
@@ -140,7 +152,3 @@ const Cart: React.FC = () => {
 };
 
 export default Cart;
-
-
-
-
