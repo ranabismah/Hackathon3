@@ -71,6 +71,15 @@ const ShopProductList: React.FC<ShopProductListProps> = ({ products, onAddToCart
                       </span>
                     )}
                   </div>
+                  <button
+                    className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent Link navigation
+                      onAddToCart(product);
+                    }}
+                  >
+                    Add to Cart
+                  </button>
                 </div>
               </div>
             </Link>
@@ -82,4 +91,3 @@ const ShopProductList: React.FC<ShopProductListProps> = ({ products, onAddToCart
 };
 
 export default ShopProductList;
-

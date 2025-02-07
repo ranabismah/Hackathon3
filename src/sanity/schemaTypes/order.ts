@@ -1,4 +1,7 @@
-const order = {
+import { defineType } from "sanity";
+import type { Rule } from "@sanity/types";
+
+const order = defineType({
   name: "order",
   title: "Orders",
   type: "document",
@@ -7,25 +10,25 @@ const order = {
       name: "customerName",
       title: "Customer Name",
       type: "string",
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: "customerAddress",
       title: "Customer Address",
       type: "string",
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: "customerPhone",
       title: "Customer Phone",
       type: "string",
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: "totalAmount",
       title: "Total Amount",
       type: "number",
-      validation: (Rule: any) => Rule.required().min(1),
+      validation: (Rule: Rule) => Rule.required().min(1),
     },
     {
       name: "items",
@@ -48,7 +51,7 @@ const order = {
       title: "Payment Method",
       type: "string",
       options: { list: ["Cash on Delivery"] },
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
     {
       name: "status",
@@ -56,10 +59,11 @@ const order = {
       type: "string",
       options: { list: ["Pending", "Shipped", "Delivered"] },
       initialValue: "Pending",
-      validation: (Rule: any) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required(),
     },
   ],
-};
+});
 
 export default order;
+
 
