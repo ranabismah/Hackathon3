@@ -7,12 +7,19 @@ import imageUrlBuilder from "@sanity/image-url";
 import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
 
+// Define Sanity Image Type
+interface SanityImage {
+  asset: {
+    _ref: string;
+  };
+}
+
 // Define Product interface
 interface Product {
   _id: string;
   title: string;
   description: string;
-  productImage: string;
+  productImage?: SanityImage;
   price: number;
   discountPercentage?: number;
   tags?: string[];
@@ -27,10 +34,11 @@ interface CartProduct extends Product {
 
 // Sanity Image URL Builder
 const builder = imageUrlBuilder(client);
-const urlFor = (source: any) => builder.image(source).url();
+const urlFor = (source?: SanityImage) =>
+  source ? builder.image(source).width(400).height(400).url() : "/fallback.jpg";
 
 // Fetch products from Sanity
-const fetchProducts = async () => {
+const fetchProducts = async (): Promise<Product[]> => {
   const query = `*[_type == "product"] | order(_createdAt desc) [0...8] {
     _id,
     title,
